@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NetSim - AWS Network Architect Hub</title>
+    <style>
+        :root {
+            --bg-dark: #0b0f19;
+            --card-dark: #161b26;
+            --aws-orange: #ff9900;
+            --aws-blue: #00a1c9;
+            --text-light: #e2e8f0;
+            --border: #2d3748;
+            --success: #38a169;
+            --error: #e53e3e;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', sans-serif; }
+        body { background-color: var(--bg-dark); color: var(--text-light); padding-bottom: 50px; }
+
+        nav { background-color: #0f141c; padding: 15px 30px; display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--border); position: sticky; top: 0; z-index: 100; }
+        nav .logo { color: var(--aws-orange); font-weight: bold; font-size: 1.5rem; }
+        nav .nav-links { display: flex; gap: 20px; }
+        nav .nav-links a { color: var(--text-light); text-decoration: none; cursor: pointer; font-weight: 500; }
+        nav .nav-links a:hover { color: var(--aws-blue); }
+
+        header { text-align: center; padding: 40px 20px; background: linear-gradient(180deg, #111723 0%, var(--bg-dark) 100%); }
+        header h1 { color: var(--aws-orange); font-size: 2.5rem; margin-bottom: 10px; }
+
+        .container { max-width: 1200px; margin: 0 auto; padding: 20px; }
+        .page-content { display: none; }
+        .page-content.active { display: block; }
+
+        .card-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 25px; margin-top: 30px; }
+        .menu-card { background: var(--card-dark); border: 1px solid var(--border); border-radius: 10px; padding: 25px; text-align: center; cursor: pointer; transition: transform 0.3s ease, box-shadow 0.3s ease; }
+        .menu-card:hover { transform: scale(1.05); box-shadow: 0 10px 20px rgba(0, 161, 201, 0.2); border-color: var(--aws-blue); }
+        .menu-card h3 { color: var(--aws-orange); margin-bottom: 10px; }
+
+        .leaderboard-section { margin-top: 40px; background: var(--card-dark); padding: 20px; border-radius: 10px; border: 1px solid var(--border); }
+        .leaderboard-table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+        .leaderboard-table th, .leaderboard-table td { padding: 12px; text-align: left; border-bottom: 1px solid var(--border); }
+        .leaderboard-table th { color: var(--aws-blue); }
+
+        .simulator-layout { display: grid; grid-template-columns: 300px 1fr; gap: 20px; }
+        .sim-node { background: #232f3e; border: 2px solid var(--border); padding: 15px; border-radius: 8px; margin: 15px 0; text-align: center; position: relative; }
+        .sim-node.active-ok { border-color: var(--success); box-shadow: 0 0 10px var(--success); }
+        .sim-node.active-fail { border-color: var(--error); box-shadow: 0 0 10px var(--error); }
+        .condition-btn { width: 100%; padding: 10px; margin-bottom: 10px; border: none; border-radius: 5px; font-weight: bold; cursor: pointer; background: #2d3748; color: white; }
+        .condition-btn.active { background: var(--aws-blue); }
+
+        .quiz-box { background: var(--card-dark); padding: 30px; border-radius: 10px; border: 1px solid var(--border); text-align: center; }
+        .quiz-option { background: #232f3e; padding: 15px; border: 1px solid var(--border); border-radius: 5px; margin: 10px 0; cursor: pointer; text-align: left; }
+        .quiz-option:hover { border-color: var(--aws-orange); }
+        input.text-input { width: 100%; padding: 12px; margin-bottom: 15px; background: #0b0f19; border: 1px solid var(--border); color: white; border-radius: 5px; font-size: 1rem; }
+        button.action-btn { background: var(--aws-orange); color: black; border: none; padding: 12px 25px; font-weight: bold; border-radius: 5px; cursor: pointer; margin: 10px; }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <div class="logo">NetSim 🌐</div>
+        <div class="nav-links">
+            <a onclick="switchTab('home')">Home</a>
+            <a onclick="switchTab('penjelasan')">Penjelasan</a>
+            <a onclick="switchTab('simulator')">Simulator</a>
+            <a onclick="switchTab('kuis')">Kuis</a>
+        </div>
+    </nav>
+
+    <div id="page-home" class="container page-content active">
+        <header>
+            <h1>AWS Network Architect Hub</h1>
+            <p>Platform Edukasi & Simulator Jaringan Cloud AWS Interaktif</p>
+        </header>
+        <div class="card-grid">
+            <div class="menu-card" onclick="switchTab('penjelasan')">
+                <h3>📖 Penjelasan Materi</h3>
+                <p>Pelajari konsep dasar Route 53, CloudFront CDN, dan AWS VPC.</p>
+            </div>
+            <div class="menu-card" onclick="switchTab('simulator')">
+                <h3>🎮 Simulator Jaringan</h3>
+                <p>Uji skenario infrastruktur cloud global ala Cisco Packet Tracer.</p>
+            </div>
+            <div class="menu-card" onclick="switchTab('kuis')">
+                <h3>🧠 Kuis Interaktif</h3>
+                <p>Uji kemampuan arsitektur kamu dan simpan nilai tertinggimu.</p>
+            </div>
+        </div>
+
+        <div class="leaderboard-section">
+            <h2>🏆 Papan Skor Lokal (Disimpan di Browser)</h2>
+            <table class="leaderboard-table">
+                <thead>
+                    <tr>
+                        <th>Nama Pengguna/Tim</th>
+                        <th>Skor Ujian</th>
+                        <th>Waktu Submit</th>
+                    </tr>
+                </thead>
+                <tbody id="leaderboard-body">
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div id="page-penjelasan" class="container page-content">
+        <div style="background: var(--card-dark); padding: 25px; border-radius: 8px; border: 1px solid var(--border);">
+            <h2>📖 Modul Infrastruktur Jaringan AWS</h2>
+            <p style="margin-top: 15px;"><strong>Route 53:</strong> Layanan DNS (Domain Name System) global berkemampuan tinggi yang menerjemahkan URL domain menjadi IP target.</p>
+            <p style="margin-top: 10px;"><strong>CloudFront:</strong> Content Delivery Network (CDN) yang mendistribusikan salinan static cache ke lokasi Edge terdekat guna memangkas latensi data.</p>
+            <p style="margin-top: 10px;"><strong>VPC (Virtual Private Cloud):</strong> Wilayah jaringan virtual terisolasi yang mengamankan penempatan server (EC2 instance) menggunakan kontrol Security Group dan Network ACL.</p>
+        </div>
+    </div>
+
+    <div id="page-simulator" class="container page-content">
+        <h2>🎮 Lab Simulator Kondisi Jaringan</h2>
+        <p style="color: #a0aec0; margin-bottom: 20px;">Pilih jenis skenario gangguan pada infrastruktur cloud di panel kiri, kemudian jalankan simulasi transfer paket data.</p>
+        
+        <div class="simulator-layout">
+            <div style="background: var(--card-dark); padding: 15px; border-radius: 8px; border: 1px solid var(--border);">
+                <h3>Skenario Jaringan</h3>
+                <button id="cond-normal" class="condition-btn active" onclick="setScenario('normal')">✅ Kondisi Normal</button>
+                <button id="cond-cdn-fail" class="condition-btn" onclick="setScenario('cdn-fail')">⚠️ CloudFront Cache Miss</button>
+                <button id="cond-vpc-down" class="condition-btn" onclick="setScenario('vpc-down')">🚨 Jalur VPN / VPC Down</button>
+                <hr style="border-color: var(--border); margin: 15px 0;">
+                <button class="action-btn" style="width: 100%; margin: 0;" onclick="runSimulation()">Kirim Request Paket Data</button>
+            </div>
+
+            <div style="background: #0f172a; padding: 20px; border-radius: 8px; border: 1px solid var(--border);">
+                <div id="node-user" class="sim-node"><h4>💻 Client Browser (Internet)</h4></div>
+                <div style="text-align: center; color: var(--text-muted);">↓</div>
+                <div id="node-r53" class="sim-node"><h4>🗺️ Amazon Route 53 (DNS)</h4></div>
+                <div style="text-align: center; color: var(--text-muted);">↓</div>
+                <div id="node-cf" class="sim-node"><h4>⚡ Amazon CloudFront (CDN)</h4></div>
+                <div style="text-align: center; color: var(--text-muted);">↓</div>
+                <div id="node-vpc" class="sim-node"><h4>🛡️ Amazon VPC Secure Server</h4></div>
+                
+                <div id="sim-log" style="margin-top: 20px; background: black; padding: 10px; font-family: monospace; color: #38a169; border-radius: 4px; min-height: 50px;">
+                    [System] Pilih Skenario dan Klik Jalankan Paket Data untuk memulai...
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="page-kuis" class="container page-content">
+        <div class="quiz-box">
+            <h2>🧠 AWS Network Assessment Quiz</h2>
+            <p style="color: #a0aec0; margin-bottom: 20px;">Ketika ujian dimulai, menu navigasi akan dikunci otomatis sampai Anda menyelesaikan seluruh rangkaian kuis!</p>
+            
+            <div id="quiz-intro-screen" style="max-width: 400px; margin: 0 auto;">
+                <input type="text" id="user-name" class="text-input" placeholder="Masukkan Nama Kamu / Nama Tim">
+                <button class="action-btn" style="background:#4a5568; color: white;" onclick="switchTab('home')">⬅️ Kembali</button>
+                <button class="action-btn" onclick="startLockedQuiz()">🚀 Mulai Kuis</button>
+            </div>
+
+            <div id="quiz-play-screen" style="display: none; text-align: left; max-width: 600px; margin: 0 auto;">
+                <h3 id="question-text">Manakah komponen AWS yang berfungsi untuk menyaring traffic masuk berdasarkan IP address (Security Wall)?</h3>
+                <div class="quiz-option" onclick="submitQuizAnswer(false)">A. Route 53 Geolocation Mapping</div>
+                <div class="quiz-option" onclick="submitQuizAnswer(true)">B. Network ACL / Security Group di dalam VPC</div>
+                <div class="quiz-option" onclick="submitQuizAnswer(false)">C. CloudFront Edge Location Caching</div>
+                <div class="quiz-option" onclick="submitQuizAnswer(false)">D. S3 Bucket Storage Access Policy</div>
+            </div>
+
+            <div id="quiz-result-screen" style="display: none;">
+                <h3 style="color: var(--success);" id="result-text">Kuis Selesai!</h3>
+                <p style="margin: 10px 0; color: var(--text-muted);">Nilai Anda berhasil direkam dengan aman ke LocalStorage browser.</p>
+                <button class="action-btn" onclick="resetQuizState()">Selesai & Buka Kunci</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let isQuizLocked = false;
+        let currentScenario = 'normal';
+
+        function switchTab(tabId) {
+            if (isQuizLocked) {
+                alert("❌ Navigasi Terkunci! Selesaikan kuis Anda terlebih dahulu untuk membuka akses halaman kembali.");
+                return;
+            }
+            document.querySelectorAll('.page-content').forEach(page => page.classList.remove('active'));
+            document.getElementById(`page-${tabId}`).classList.add('active');
+            if(tabId === 'home') renderLeaderboard();
+        }
+
+        function setScenario(scen) {
+            currentScenario = scen;
+            document.querySelectorAll('.condition-btn').forEach(btn => btn.classList.remove('active'));
+            document.getElementById(`cond-${scen}`).classList.add('active');
+        }
+
+        function runSimulation() {
+            const log = document.getElementById('sim-log');
+            document.querySelectorAll('.sim-node').forEach(n => n.className = 'sim-node');
+            log.innerHTML = "[Proses] Menginisiasi transmisi paket data...<br>";
+
+            setTimeout(() => {
+                document.getElementById('node-user').classList.add('active-ok');
+                document.getElementById('node-r53').classList.add('active-ok');
+                log.innerHTML += "[Sukses] Amazon Route 53 sukses memetakan domain ke DNS target.<br>";
+            }, 500);
+
+            setTimeout(() => {
+                const cfNode = document.getElementById('node-cf');
+                if (currentScenario === 'cdn-fail') {
+                    cfNode.classList.add('active-fail');
+                    log.innerHTML += "[Cache Miss] CloudFront gagal menemukan salinan lokal. Request dialihkan paksa menuju Server Pusat.<br>";
+                } else {
+                    cfNode.classList.add('active-ok');
+                    log.innerHTML += "[Sukses] CloudFront mempercepat pengiriman aset via Static Cache.<br>";
+                }
+            }, 1200);
+
+            setTimeout(() => {
+                const vpcNode = document.getElementById('node-vpc');
+                if (currentScenario === 'vpc-down') {
+                    vpcNode.classList.add('active-fail');
+                    log.innerHTML += "<span style='color:var(--error);'>[ERROR 502] Jalur VPC mengalami kegagalan sistem total! Transmisi gagal.</span>";
+                } else {
+                    vpcNode.classList.add('active-ok');
+                    log.innerHTML += "<span style='color:var(--success);'>[BERHASIL] Paket data berhasil bersarang di dalam Private Subnet VPC secara aman!</span>";
+                }
+            }, 2000);
+        }
+
+        function startLockedQuiz() {
+            const nameInput = document.getElementById('user-name').value.trim();
+            if(!nameInput) {
+                alert("Silakan masukkan nama pengguna atau tim Anda terlebih dahulu!");
+                return;
+            }
+            isQuizLocked = true;
+            document.getElementById('quiz-intro-screen').style.display = 'none';
+            document.getElementById('quiz-play-screen').style.display = 'block';
+        }
+
+        function submitQuizAnswer(isCorrect) {
+            const nameInput = document.getElementById('user-name').value.trim();
+            const score = isCorrect ? 100 : 0;
+            
+            document.getElementById('quiz-play-screen').style.display = 'none';
+            document.getElementById('quiz-result-screen').style.display = 'block';
+            document.getElementById('result-text').innerText = `Kuis Selesai! Skor ${nameInput}: ${score}`;
+            
+            const timestamp = new Date().toLocaleTimeString();
+            let leaderboardData = JSON.parse(localStorage.getItem('netsim_scores')) || [];
+            leaderboardData.push({ name: nameInput, userScore: score, time: timestamp });
+            localStorage.setItem('netsim_scores', JSON.stringify(leaderboardData));
+        }
+
+        function resetQuizState() {
+            isQuizLocked = false;
+            document.getElementById('user-name').value = '';
+            document.getElementById('quiz-result-screen').style.display = 'none';
+            document.getElementById('quiz-intro-screen').style.display = 'block';
+            switchTab('home');
+        }
+
+        function renderLeaderboard() {
+            const tbody = document.getElementById('leaderboard-body');
+            tbody.innerHTML = '';
+            let leaderboardData = JSON.parse(localStorage.getItem('netsim_scores')) || [];
+            
+            if(leaderboardData.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="3" style="text-align:center; color:var(--text-muted);">Belum ada rekam nilai kuis saat ini.</td></tr>`;
+                return;
+            }
+
+            leaderboardData.sort((a, b) => b.userScore - a.userScore);
+
+            leaderboardData.forEach(data => {
+                tbody.innerHTML += `
+                    <tr>
+                        <td><strong>${data.name}</strong></td>
+                        <td style="color:var(--aws-orange); font-weight:bold;">${data.userScore}</td>
+                        <td style="color:var(--text-muted); font-size:0.9rem;">${data.time}</td>
+                    </tr>
+                `;
+            });
+        }
+
+        window.onload = renderLeaderboard;
+    </script>
+</body>
+</html>
