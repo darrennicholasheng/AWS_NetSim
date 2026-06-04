@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NetSim - AWS Network Architect Hub</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="script.js"></script>
+</head>
+<body>
+    <nav>
+        <div class="logo">
+            <img src="netsim_logo.png" alt="NetSim Logo" class="logo-img">
+        </div>
+        
+        <ul class="nav-links-desktop">
+            <li><a onclick="selectMenu('home')">Home</a></li>
+            <li><a onclick="selectMenu('summary')">Summary</a></li>
+            <li><a onclick="selectMenu('simulator')">Simulator Lab</a></li>
+            <li><a onclick="selectMenu('estimator')">Cost Estimator</a></li>
+            <li><a onclick="selectMenu('quiz')">Quiz</a></li>
+        </ul>
+
+        <div class="menu-toggle" onclick="openMenu()">
+            <span></span>
+            <span style="margin-top: 5px; margin-bottom: 5px;"></span>
+            <span></span>
+        </div>
+    </nav>
+    <div class="nav-overlay" id="navOverlay">
+        <button class="close-menu-btn" onclick="closeMenu()">✕</button>
+        <a onclick="selectMenu('home')">Home</a>
+        <a onclick="selectMenu('summary')">Summary</a>
+        <a onclick="selectMenu('simulator')">Simulator Lab</a>
+        <a onclick="selectMenu('estimator')">Cost Estimator</a>
+        <a onclick="selectMenu('quiz')">Quiz</a>
+    </div>
+    <div id="page-home" class="page-content active">
+        <div class="hero-section">
+            <div class="hero-title-box">
+                <h1>AWS Network Architect Hub</h1>
+                <p>Platform Edukasi & Simulator Jaringan Cloud AWS Interaktif Eksklusif. Kuasai implementasi infrastruktur cloud berstandar industri global melalui visualisasi real-time.</p>
+                <button class="action-btn" onclick="scrollToContent()">Start Network Exploration</button>
+            </div>
+            <div class="scroll-indicator" onclick="scrollToContent()">
+                Scroll Down ⬇️
+            </div>
+        </div>
+
+        <div class="container" id="main-home-content">
+            <div class="card-grid">
+                <div class="card-wrapper">
+                    <div class="menu-card" onclick="switchTab('summary')">
+                        <h3>📖 Summary</h3>
+                        <p>Bedah tuntas Modul AWS: Kuasai arsitektur inti isolasi regional VPC, penentuan kebijakan rute cerdas Route 53, hingga optimalisasi cache CloudFront CDN.</p>
+                    </div>
+                </div>
+                <div class="card-wrapper">
+                    <div class="menu-card" onclick="switchTab('simulator')">
+                        <h3>🎮 Lab Simulator</h3>
+                        <p>Uji skenario infrastruktur cloud. Simulasikan alur runtut paket data sekuensial dan saksikan mekanisme failover arsitektur secara nyata.</p>
+                    </div>
+                </div>
+                <div class="card-wrapper">
+                    <div class="menu-card" onclick="switchTab('estimator')">
+                        <h3>💰 Cost Estimator</h3>
+                        <p>Hitung perkiraan biaya operasional bulanan dari arsitektur jaringan cloud Anda (VPC, Route 53, CloudFront) secara transparan.</p>
+                    </div>
+                </div>
+                <div class="card-wrapper">
+                    <div class="menu-card" onclick="switchTab('quiz')">
+                        <h3>🧠 Quiz</h3>
+                        <p>Uji kompetensi pemahaman arsitektur jaringan Anda dalam mode ujian terkunci dan simpan pencapaian skor terbaik di papan peringkat.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="leaderboard-section">
+                <h2>🏆 Leaderboard</h2>
+                <table class="leaderboard-table">
+                    <thead>
+                        <tr>
+                            <th>User/Team Name</th>
+                            <th>Quiz Score</th>
+                            <th>Submitted Time</th>
+                        </tr>
+                    </thead>
+                    <tbody id="leaderboard-body">
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div id="page-summary" class="page-content">
+        <div class="inner-page-header">
+            <h1 style="color:var(--aws-blue);">📚 Master Hub: Core AWS Networking Deep Dive</h1>
+            <p>Panduan teknis mendalam dan komprehensif standardisasi arsitektur cloud AWS regional hingga global tepi.</p>
+        </div>
+
+        <div class="container" style="padding-top:0;">
+            <div class="edu-grid">
+                <div class="edu-card">
+                    <h2>☁️ 1. Amazon VPC (Virtual Private Cloud) <span class="badge">Fondasi Regional</span></h2>
+                    <p>Amazon VPC memisahkan infrastruktur Anda secara logis di dalam satu AWS Region tertentu secara terisolasi. <strong>VPC tidak bisa lintas Region!</strong></p>
+                    
+                    <h3>A. Komponen Pengalamatan & Pembagian Jaringan</h3>
+                    <div class="tech-box">
+                        <p>• <strong>VPC CIDR Block:</strong> Penentuan rentang alamat IP menggunakan notasi Classless Inter-Domain Routing. Contoh: <code style="color:var(--aws-orange)">10.0.0.0/16</code> menghasilkan total 65.536 IP privat.</p>
+                        <p style="margin-top:5px;">• <strong>Subnet:</strong> Rentang IP terisolasi yang terikat wajib pada 1 Availability Zone (AZ).</p>
+                        <p style="margin-left:15px; font-size:0.95rem;">- <span style="color:var(--neon-blue)">Public Subnet:</span> Memiliki rute langsung ke Internet Gateway. Bagus untuk Web Server / Load Balancer.</p>
+                        <p style="margin-left:15px; font-size:0.95rem;">- <span style="color:#a0aec0">Private Subnet:</span> Terisolasi dari internet luar. Tempat aman untuk Database RDS / backend sensitif.</p>
+                        <p style="margin-top:8px;" class="highlight-alert">⚠️ Aturan AWS: Di setiap subnet, AWS memesan 5 alamat IP pertama dan terakhir untuk internal routing, DNS, dan broadcast!</p>
+                    </div>
+
+                    <h3>B. Komponen Konektivitas (Gateways & Routing)</h3>
+                    <div class="tech-box">
+                        <p>• <strong>Internet Gateway (IGW):</strong> Penghubung VPC ke internet luar secara dua arah (Inbound & Outbound) bersifat highly available.</p>
+                        <p style="margin-top:5px;">• <strong>NAT Gateway:</strong> Diletakkan wajib di Public Subnet agar resource di Private Subnet bisa download patch/update ke internet, tetapi memblokir koneksi liar dari internet luar masuk ke dalam.</p>
+                        <p style="margin-top:5px;">• <strong>Route Table (Tabel Rute):</strong> Penentu arah paket data. Rute lokal bawaan (<code style="color:var(--neon-blue)">10.0.0.0/16 -> local</code>) menjamin seluruh subnet saling kenal. Rute default internet dinyatakan via <code style="color:var(--aws-orange)">0.0.0.0/0</code>.</p>
+                    </div>
+
+                    <h3>C. Lapisan Keamanan Jaringan (Firewall Berlapis)</h3>
+                    <table class="tech-table">
+                        <thead>
+                            <tr>
+                                <th>Fitur</th>
+                                <th>Security Group (SG)</th>
+                                <th>Network Access Control List (NACL)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>Tingkat Operasi</strong></td>
+                                <td>Tingkat Instance (Virtual Interface / ENI)</td>
+                                <td>Tingkat Subnet</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Sifat Status</strong></td>
+                                <td><span style="color:var(--neon-blue)">Stateful</span> (Inbound diizinkan, Outbound balasan otomatis lolos)</td>
+                                <td><span style="color:var(--aws-orange)">Stateless</span> (Aturan masuk & keluar wajib diatur terpisah)</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Jenis Aturan</strong></td>
+                                <td>Hanya mendukung aturan mengizinkan (Allow). Deny by default.</td>
+                                <td>Mendukung aturan Allow dan Deny secara eksplisit.</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Evaluasi Aturan</strong></td>
+                                <td>Seluruh aturan dicek bersamaan tanpa urutan.</td>
+                                <td>Dievaluasi berurutan berdasarkan nomor terkecil (Aturan 100 sebelum 200).</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="edu-card">
+                    <h2>🗺️ 2. AWS Route 53 (Deep Dive)</h2>
+                    <p>Amazon Route 53 memanfaatkan arsitektur Anycast global agar kueri resolusi domain dari user selalu mendarat di DNS server terdekat dengan latensi minimal.</p>
+                    
+                    <h3>A. Terminologi dan Struktur Data DNS AWS</h3>
+                    <ul>
+                        <li><strong>Hosted Zone:</strong> Wadah records DNS domain Anda. Tersedia versi <em>Public</em> untuk rute luar internet dan <em>Private</em> khusus resolusi internal VPC.</li>
+                    </ul>
+
+                    <p style="margin-top: 15px; font-weight: bold; color: var(--aws-orange);">DNS Record Types Utama:</p>
+                    <div class="tech-box">
+                        <p>• <strong>A Record:</strong> Memetakan nama domain ke alamat IPv4 fisik.</p>
+                        <p>• <strong>CNAME Record:</strong> Memetakan domain ke nama domain lain. Tidak bisa ditaruh di Zone Apex (root domain).</p>
+                        <p>• <strong>Alias Record:</strong> Fitur eksklusif AWS. Bisa dipakai di Zone Apex untuk memetakan nama root domain langsung ke AWS resources (CloudFront/Load Balancer) tanpa overhead biaya DNS.</p>
+                    </div>
+
+                    <h3>B. Bedah Mendalam 7 Kebijakan Routing</h3>
+                    <div class="tech-box">
+                        <h4>1. Simple Routing:</h4> <p>Margarahkan domain ke satu atau sekumpulan IP statis secara round-robin tanpa filter kesehatan.</p>
+                        <h4 style="margin-top:5px;">2. Weighted Routing:</h4> <p>Membahi persentase trafik berdasarkan bobot angka (cocok untuk uji coba Blue-Green Deployment).</p>
+                        <h4 style="margin-top:5px;">3. Latency-based Routing:</h4> <p>Megarahkan user otomatis ke AWS Region yang memberikan waktu tunda paling kecil.</p>
+                        <h4 style="margin-top:5px;">4. Failover Routing:</h4> <p>Mengalihkan rute 100% ke disaster recovery server (Passive) jika server utama (Active) terdeteksi down oleh Health Check.</p>
+                        <h4 style="margin-top:5px;">5. Geolocation Routing:</h4> <p>Membasi atau mengarahkan alur data berdasarkan benua/negara asal IP pengguna.</p>
+                        <h4 style="margin-top:5px;">6. Geoproximity Routing:</h4> <p>Menghitung jarak koordinat absolut dan memanipulasinya lewat nilai 'Bias'.</p>
+                        <h4 style="margin-top:5px;">7. Multi-value Answer:</h4> <p>Mengembalikan hingga 8 record IP yang dipastikan sehat walafiat lewat integrasi kueri ter-monitoring.</p>
+                    </div>
+                </div>
+
+                <div class="edu-card">
+                    <h2>⚡ 3. Amazon CloudFront (Deep Dive)</h2>
+                    <p>Lapisan Content Delivery Network (CDN) global yang memotong jarak transmisi data statis maupun dinamis aplikasi Anda.</p>
+                    <h3>A. Komponen Edge</h3>
+                    <ul>
+                        <li><strong>Edge Locations:</strong> Titik server mini luar Region penampung cache terdekat dari end-user.</li>
+                        <li><strong>Regional Edge Caches (REC):</strong> Lapisan tengah penyarian badai kueri agar tidak menghantam langsung server origin pusat.</li>
+                    </ul>
+                    <h3>B. Aturan Enkripsi Jaringan</h3>
+                    <p>Mengamankan S3 Bucket via <strong>Origin Access Control (OAC)</strong> sehingga data di S3 tidak bisa dicuri secara bypass langsung melainkan wajib melewati filter otentikasi CloudFront.</p>
+                </div>
+
+                <div class="edu-card synergy-card" style="border-left: 5px solid var(--neon-green);">
+                    <h2>🤝 4. Sinergi Arsitektur Utuh (Full Systems Integration)</h2>
+                    <p>Kolaborasi orkestrasi global Route 53 + CloudFront di tepi perimeter digabungkan dengan ketatnya barikade Amazon VPC regional.</p>
+                    <div class="tech-box" style="border-color: var(--neon-green);">
+                        <h4>Alur Sekuensial Paket Data:</h4>
+                        <p>1. User melempar domain $\rightarrow$ **Route 53** menyuplai IP Edge **CloudFront** terdekat via Alias Record.</p>
+                        <p>2. CloudFront meproses jika terjadi *Cache Hit* langsung dipulangkan ke user. Jika *Cache Miss*, dilempar ke internal **VPC**.</p>
+                        <p>3. Application Load Balancer di Public Subnet menerima data, memverifikasi token security group lalu memproses ke EC2 di Private Subnet dengan super aman.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="page-simulator" class="page-content">
+        <div class="inner-page-header">
+            <h1 style="color:var(--aws-blue);">🎮 Simulator Lab Condition</h1>
+            <p>Pilih jenis skenario gangguan pada infrastruktur cloud di panel kiri, kemudian jalankan simulasi transfer paket data.</p>
+        </div>
+        
+        <div class="container" style="padding-top:0;">
+            <div class="simulator-layout">
+                <div style="background: var(--card-dark); padding: 15px; border-radius: 8px; border: 1px solid var(--border); height: fit-content;">
+                    <h3>Skenario Jaringan</h3>
+                    <br><br>
+                    <button id="cond-normal" class="condition-btn active" onclick="setScenario('normal')">✅ Kondisi Normal</button>
+                    <button id="cond-cdn-fail" class="condition-btn" onclick="setScenario('cdn-fail')">⚠️ CloudFront Cache Miss</button>
+                    <button id="cond-vpc-down" class="condition-btn" onclick="setScenario('vpc-down')">🚨 Jalur VPN / VPC Down</button>
+                    <hr style="border-color: var(--border); margin: 15px 0;">
+                    <button class="action-btn" style="width: 100%; margin: 0;" onclick="runSimulation()">Kirim Request Paket Data</button>
+                </div>
+
+                <div class="sim-visualizer-box">
+                    <svg class="sim-svg-overlay" id="sim-svg-overlay">
+                        <defs>
+                            <marker id="arrow-blue" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                                <path d="M 0 1.5 L 10 5 L 0 8.5 z" fill="var(--neon-blue)"/>
+                            </marker>
+                            <marker id="arrow-success" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                                <path d="M 0 1.5 L 10 5 L 0 8.5 z" fill="var(--success)"/>
+                            </marker>
+                            <marker id="arrow-warn" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                                <path d="M 0 1.5 L 10 5 L 0 8.5 z" fill="var(--warning)"/>
+                            </marker>
+                            <marker id="arrow-fail" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                                <path d="M 0 1.5 L 10 5 L 0 8.5 z" fill="var(--error)"/>
+                            </marker>
+                            <marker id="arrow-dark" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                                <path d="M 0 1.5 L 10 5 L 0 8.5 z" fill="#2d3748"/>
+                            </marker>
+                        </defs>
+                        
+                        <path id="path-user-r53" class="sim-path" marker-end="url(#arrow-dark)" />
+                        <path id="path-r53-cf" class="sim-path" marker-end="url(#arrow-dark)" />
+                        <path id="path-cf-vpc" class="sim-path" marker-end="url(#arrow-dark)" />
+                    </svg>
+
+                    <div class="sim-grid-viewport">
+                        <div id="node-user" class="sim-node">
+                            <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/chrome/chrome-original.svg" alt="Client Browser (Internet)">
+                            <span>Client Browser</span>
+                        </div>
+
+                        <div id="node-r53" class="sim-node">
+                            <img src="https://raw.githubusercontent.com/gilbarbara/logos/master/logos/aws-route53.svg" alt="Amazon Route 53 (DNS)">
+                            <span>Route 53 DNS</span>
+                        </div>
+
+                        <div id="node-cf" class="sim-node">
+                            <img src="https://raw.githubusercontent.com/gilbarbara/logos/master/logos/aws-cloudfront.svg" alt="Amazon CloudFront (CDN)">
+                            <span>CloudFront CDN</span>
+                        </div>
+
+                        <div id="node-vpc" class="sim-node">
+                            <img src="https://raw.githubusercontent.com/gilbarbara/logos/master/logos/aws-vpc.svg" alt="Amazon VPC Secure Server">
+                            <span>VPC Origin</span>
+                        </div>
+                    </div>
+                    
+                    <div id="sim-log" style="margin-top: 30px; background: black; padding: 12px; font-family: monospace; color: #38a169; border-radius: 4px; min-height: 50px; line-height: 1.6; position: relative; z-index: 2;">
+                        [System] Pilih Skenario dan Klik Jalankan Paket Data untuk memulai...
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="page-estimator" class="page-content">
+        <div class="inner-page-header">
+            <h1 style="color:var(--aws-blue);">💰 AWS Architecture Cost Estimator</h1>
+            <p>Kalkulator Interaktif Real-Time untuk memproyeksikan pengeluaran bulanan arsitektur topologi jaringan AWS Anda.</p>
+        </div>
+
+        <div class="container" style="padding-top:0;">
+            <div class="estimator-layout">
+                <div>
+                    <div class="estimator-card">
+                        <h3>☁️ Amazon VPC Component Cost</h3>
+                        <div class="form-group">
+                            <label>Jumlah NAT Gateway (Aktif 24/7 sebulan):</label>
+                            <input type="number" id="cost-nat-qty" value="1" min="0" oninput="calculateCloudCosts()">
+                            <small style="color:#a0aec0; font-size:0.8rem;">Tarif Standard Regional: ~$0.045 per jam (~$32.40/bulan per unit)</small>
+                        </div>
+                        <div class="form-group">
+                            <label>Volume Data yang diproses NAT Gateway (GB / Bulan):</label>
+                            <input type="number" id="cost-nat-data" value="100" min="0" oninput="calculateCloudCosts()">
+                            <small style="color:#a0aec0; font-size:0.8rem;">Tarif Pemrosesan Data: $0.045 per GB</small>
+                        </div>
+                    </div>
+
+                    <div class="estimator-card">
+                        <h3>🗺️ AWS Route 53 DNS Cost</h3>
+                        <div class="form-group">
+                            <label>Jumlah Hosted Zone (Domain):</label>
+                            <input type="number" id="cost-r53-zones" value="1" min="0" oninput="calculateCloudCosts()">
+                            <small style="color:#a0aec0; font-size:0.8rem;">Tarif Base: $0.50 per hosted zone / bulan</small>
+                        </div>
+                        <div class="form-group">
+                            <label>Estimasi Kueri DNS Masuk (Per Juta Kueri / Bulan):</label>
+                            <input type="number" id="cost-r53-queries" value="10" min="0" oninput="calculateCloudCosts()">
+                            <small style="color:#a0aec0; font-size:0.8rem;">Tarif Standard: $0.40 per 1 juta kueri</small>
+                        </div>
+                    </div>
+
+                    <div class="estimator-card">
+                        <h3>⚡ Amazon CloudFront CDN Cost</h3>
+                        <div class="form-group">
+                            <label>Volume Data Out ke Internet Publik (GB / Bulan):</label>
+                            <input type="number" id="cost-cf-dataout" value="500" min="0" oninput="calculateCloudCosts()">
+                            <small style="color:#a0aec0; font-size:0.8rem;">Estimasi regional (Asia Pasifik): ~$0.114 per GB</small>
+                        </div>
+                    </div>
+                </div>
+
+                <div>
+                    <div class="calc-summary-sticky">
+                        <h3>Total Estimasi Bulanan</h3>
+                        <div class="total-price" id="grand-total-price">$0.00</div>
+                        <p style="font-size:0.9rem; color:#cbd5e0;">*Perhitungan didasarkan pada acuan harga AWS Region Asia Pasifik (Singapura/Jakarta).</p>
+                        
+                        <div class="breakdown-list">
+                            <div class="breakdown-item">
+                                <span>Amazon VPC Total:</span>
+                                <span id="breakdown-vpc" style="color:var(--neon-blue); font-weight:bold;">$0.00</span>
+                            </div>
+                            <div class="breakdown-item">
+                                <span>Route 53 Total:</span>
+                                <span id="breakdown-r53" style="color:var(--neon-blue); font-weight:bold;">$0.00</span>
+                            </div>
+                            <div class="breakdown-item">
+                                <span>CloudFront Total:</span>
+                                <span id="breakdown-cf" style="color:var(--neon-blue); font-weight:bold;">$0.00</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="page-quiz" class="page-content">
+        <div class="inner-page-header">
+            <h1 style="color:var(--aws-blue);">🧠 AWS Network Assessment Quiz</h1>
+            <p>Sistem Mode Ujian Terkunci: Evaluasi Standar AWS Academy Knowledge Check Modul 5.</p>
+        </div>
+
+        <div class="container" style="padding-top:0;">
+            <div class="quiz-box">
+                <div class="quiz-meta" id="quiz-meta-panel" style="display: none;">
+                    <span id="quiz-progress-text">Soal 1 dari 10</span>
+                    <span id="quiz-score-running" style="color: var(--neon-blue);">Poin Benar: 0</span>
+                </div>
+                <div class="quiz-progress-bar" id="quiz-progress-bar-container" style="display: none;">
+                    <div class="quiz-progress-fill" id="quiz-progress-fill"></div>
+                </div>
+
+                <div id="quiz-intro-screen" style="max-width: 500px; margin: 0 auto; text-align: center;">
+                    <p style="color: #cbd5e0; margin-bottom: 20px; font-size: 1.05rem; line-height: 1.6;">
+                        Anda akan memulai quiz yang berisi 10 soal komprehensif mengenai Amazon VPC, Route 53, dan CloudFront. Menu navigasi akan dikunci otomatis sampai Anda menekan tombol quiz selesai.
+                    </p>
+                    <input type="text" id="user-name" class="text-input" placeholder="Masukkan Nama Kamu / Nama Tim">
+                    <div style="margin-top: 10px;">
+                        <button class="action-btn" style="background:#4a5568; color: white;" onclick="switchTab('home')">⬅️ Kembali</button>
+                        <button class="action-btn" onclick="startLockedQuiz()">🚀 Mulai Ujian</button>
+                    </div>
+                </div>
+
+                <div id="quiz-play-screen" style="display: none; text-align: left; max-width: 800px; margin: 0 auto;">
+                    <h3 id="question-text">Memuat pertanyaan...</h3>
+                    <div id="quiz-options-container">
+                    </div>
+                </div>
+
+                <div id="quiz-result-screen" style="display: none; text-align: center;">
+                    <h3 style="color: var(--neon-green); font-size: 2rem; margin-bottom: 15px;" id="result-status-title">Quiz Selesai!</h3>
+                    <h2 style="font-size: 3rem; margin-bottom: 20px; color: #fff;" id="result-score-text">Skor: 0 / 100</h2>
+                    <p style="margin: 15px 0; color: #a0aec0; font-size: 1.05rem;" id="result-summary-text">Kerja bagus!</p>
+                    <div style="margin-top: 25px;">
+                        <button class="action-btn" style="background: var(--aws-blue); color: white;" onclick="showReviewScreen()">🔍 Lihat Kunci Jawaban</button>
+                        <button class="action-btn" onclick="resetQuizState()">Selesai & Buka Kunci Menu</button>
+                    </div>
+                </div>
+
+                <div id="quiz-review-screen" style="display: none; max-width: 850px; margin: 0 auto;">
+                    <h3 style="color: var(--aws-orange); font-size: 1.8rem; margin-bottom: 20px; text-align: center; border-bottom: 2px solid var(--border); padding-bottom: 15px;">
+                        🔑 Pembahasan & Kunci Jawaban Quiz
+                    </h3>
+                    <div id="review-list-container">
+                    </div>
+                    <div style="text-align: center; margin-top: 30px;">
+                        <button class="action-btn" style="background: var(--success); color: white; padding: 15px 40px;" onclick="resetQuizState()">🏠 Kembali Ke Home</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
