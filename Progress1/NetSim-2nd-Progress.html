@@ -1,0 +1,1505 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NetSim - AWS Network Architect Hub</title>
+    <style>
+        :root {
+            --bg-dark: #0b0f19;
+            --card-dark: #161b26;
+            --aws-orange: #ff9900;
+            --aws-blue: #00a1c9;
+            --text-light: #e2e8f0;
+            --border: #2d3748;
+            --success: #38a169;
+            --error: #e53e3e;
+            --warning: #dd6b20;
+            --neon-green: #39ff14;
+            --neon-blue: #00f3ff;
+            --tricks-bg: #111723;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text-light);
+            padding-bottom: 50px;
+        }
+
+        nav {
+            background-color: rgba(17, 23, 35, 0.85);
+            backdrop-filter: blur(10px);
+            padding: 20px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 1000;
+            height: 80px;
+            border-bottom: 1px solid rgba(45, 55, 72, 0.5);
+        }
+        
+        nav .logo {
+            color: #fff;
+            font-weight: 800;
+            font-size: 1.6rem;
+            letter-spacing: 1px;
+            text-shadow: 0 0 10px var(--neon-blue);
+        }
+        
+        .menu-toggle {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            width: 30px;
+            height: 18px;
+            cursor: pointer;
+            z-index: 1001;
+            transition: transform 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+        }
+        
+        .menu-toggle span {
+            display: block;
+            width: 100%;
+            height: 3px;
+            background-color: var(--neon-green);
+            box-shadow: 0 0 8px var(--neon-green);
+            transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+        }
+
+        .menu-toggle:hover {
+            transform: scale(1.05);
+        }
+
+        .menu-toggle:hover span:first-child {
+            transform: translateY(4px);
+            box-shadow: 0 0 15px var(--neon-green), 0 0 5px #fff;
+        }
+
+        .menu-toggle:hover span:last-child {
+            transform: translateY(-4px);
+            box-shadow: 0 0 15px var(--neon-green), 0 0 5px #fff;
+        }
+
+        .nav-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            background-color: rgba(11, 15, 25, 0.98);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            gap: 30px;
+            transform: translateY(-100%);
+            transition: transform 0.5s cubic-bezier(0.77, 0, 0.175, 1);
+            z-index: 1002;
+            border-bottom: 2px solid var(--neon-blue);
+        }
+
+        .nav-overlay.open {
+            transform: translateY(0);
+        }
+
+        .close-menu-btn {
+            position: absolute;
+            top: 25px;
+            right: 40px;
+            background: transparent;
+            border: none;
+            color: var(--error);
+            font-size: 2rem;
+            font-weight: 300;
+            cursor: pointer;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.3s, text-shadow 0.3s;
+            text-shadow: 0 0 8px var(--error);
+        }
+
+        .close-menu-btn:hover {
+            transform: scale(1.1) rotate(90deg);
+            text-shadow: 0 0 15px var(--error);
+        }
+
+        .nav-overlay a {
+            color: var(--text-light);
+            text-decoration: none;
+            font-size: 2rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: transform 0.3s, color 0.3s, text-shadow 0.3s;
+        }
+
+        .nav-overlay a:hover {
+            color: var(--neon-green);
+            text-shadow: 0 0 15px var(--neon-green);
+            transform: scale(1.1);
+        }
+
+        .hero-section {
+            position: relative;
+            height: 100vh;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 20px;
+            background: linear-gradient(rgba(11, 15, 25, 0.75), rgba(11, 15, 25, 0.9)), 
+                        url('https://images.unsplash.com/photo-1558494949-ef010cbdcc31?q=80&w=2000&auto=format&fit=crop') no-repeat center center/cover;
+        }
+
+        .hero-title-box {
+            background: rgba(22, 27, 38, 0.65);
+            border: 2px solid rgba(0, 243, 255, 0.3);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5), 0 0 30px rgba(0, 243, 255, 0.1);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            padding: 60px 80px;
+            border-radius: 16px;
+            max-width: 950px;
+            width: 90%;
+            animation: fadeInGlow 1.5s ease-out;
+        }
+
+        @keyframes fadeInGlow {
+            from {
+                opacity: 0;
+                transform: scale(0.95);
+                box-shadow: 0 0 0 rgba(0,0,0,0);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+                box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5), 0 0 30px rgba(0, 243, 255, 0.1);
+            }
+        }
+
+        .hero-section h1 {
+            color: var(--aws-orange);
+            font-size: 3.8rem;
+            margin-bottom: 20px;
+            font-weight: 800;
+            letter-spacing: 1px;
+            text-shadow: 0 0 20px rgba(255, 153, 0, 0.3);
+        }
+
+        .hero-section p {
+            font-size: 1.4rem;
+            color: #cbd5e0;
+            max-width: 750px;
+            margin: 0 auto 35px auto;
+            line-height: 1.6;
+        }
+
+        .scroll-indicator {
+            position: absolute;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: var(--neon-green);
+            font-size: 0.9rem;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            animation: bounce 2s infinite;
+            cursor: pointer;
+            text-shadow: 0 0 8px var(--neon-green);
+        }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% {
+                transform: translate(-50%, 0);
+            }
+            40% {
+                transform: translate(-50%, -10px);
+            }
+            60% {
+                transform: translate(-50%, -5px);
+            }
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        .page-content {
+            display: none;
+        }
+
+        .page-content.active {
+            display: block;
+        }
+        
+        .inner-page-header {
+            text-align: center;
+            padding: 120px 20px 40px 20px;
+            background: linear-gradient(180deg, #111723 0%, var(--bg-dark) 100%);
+        }
+
+        .inner-page-header h1 {
+            font-size: 2.8rem;
+            margin-bottom: 10px;
+        }
+
+        .card-grid {
+            display: flex;
+            gap: 25px;
+            margin-top: 10px;
+            width: 100%;
+            height: 250px;
+        }
+
+        .card-wrapper {
+            flex: 1;
+            position: relative;
+            transition: flex 0.6s cubic-bezier(0.25, 1, 0.5, 1);
+            overflow: hidden;
+            border-radius: 10px;
+        }
+
+        .menu-card {
+            background: var(--card-dark);
+            border: 1px solid var(--border);
+            padding: 25px;
+            text-align: center;
+            cursor: pointer;
+            height: 100%;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            transition: background 0.4s, border-color 0.4s, box-shadow 0.4s;
+        }
+
+        .card-grid:hover .card-wrapper {
+            flex: 0.001;
+        }
+
+        .card-grid .card-wrapper:hover {
+            flex: 2;
+        }
+
+        .card-wrapper:hover .menu-card {
+            border-color: var(--neon-blue);
+            box-shadow: 0 10px 30px rgba(0, 243, 255, 0.2);
+            background: #1e2638;
+        }
+
+        .menu-card h3 {
+            color: var(--aws-orange);
+            margin-bottom: 12px;
+            font-size: 1.4rem;
+            white-space: nowrap;
+            transition: font-size 0.3s;
+        }
+
+        .card-wrapper:hover .menu-card h3 {
+            font-size: 1.7rem;
+            color: #fff;
+        }
+
+        .menu-card p {
+            max-width: 220px;
+            transition: max-width 0.3s;
+            color: #a0aec0;
+            font-size: 0.95rem;
+            line-height: 1.5;
+            overflow: hidden;
+            display: -webkit-box;
+            line-clamp: 3;
+            -webkit-box-orient: vertical;
+        }
+
+        .card-wrapper:hover .menu-card p {
+            max-width: 700px;
+            color: var(--text-light);
+            display: block;
+        }
+
+        .leaderboard-section {
+            margin-top: 60px;
+            background: var(--card-dark);
+            padding: 25px;
+            border-radius: 10px;
+            border: 1px solid var(--border);
+        }
+
+        .leaderboard-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+
+        .leaderboard-table th, .leaderboard-table td {
+            padding: 14px;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .leaderboard-table th {
+            color: var(--aws-blue);
+            font-size: 1.1rem;
+        }
+
+        .simulator-layout {
+            display: grid;
+            grid-template-columns: 300px 1fr;
+            gap: 20px;
+        }
+
+        .sim-node {
+            background: #232f3e;
+            border: 2px solid var(--border);
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            text-align: center;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .sim-node.active-ok {
+            border-color: var(--success);
+            box-shadow: 0 0 15px var(--success);
+            background: #1b4332;
+            transform: scale(1.02);
+        }
+
+        .sim-node.active-warn {
+            border-color: var(--warning);
+            box-shadow: 0 0 15px var(--warning);
+            background: #4c3a1d;
+            transform: scale(1.02);
+        }
+
+        .sim-node.active-fail {
+            border-color: var(--error);
+            box-shadow: 0 0 15px var(--error);
+            background: #4c1d1d;
+            transform: scale(0.98);
+        }
+
+        .condition-btn {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: none;
+            border-radius: 5px;
+            font-weight: bold;
+            cursor: pointer;
+            background: #2d3748;
+            color: white;
+            transition: background 0.3s;
+        }
+
+        .condition-btn.active {
+            background: var(--aws-blue);
+            box-shadow: 0 0 10px rgba(0, 161, 201, 0.4);
+        }
+
+        .estimator-layout {
+            display: grid;
+            grid-template-columns: 1fr 400px;
+            gap: 30px;
+        }
+
+        @media (max-width: 900px) {
+            .estimator-layout {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .estimator-card {
+            background: var(--card-dark);
+            border: 1px solid var(--border);
+            padding: 25px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+        }
+
+        .estimator-card h3 {
+            color: var(--aws-orange);
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .form-group {
+            margin-bottom: 18px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 0.95rem;
+            color: #cbd5e0;
+        }
+
+        .form-group input[type="number"], .form-group select {
+            width: 100%;
+            padding: 12px;
+            background: #0b0f19;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            color: white;
+            font-size: 1rem;
+        }
+
+        .form-group input:focus, .form-group select:focus {
+            outline: none;
+            border-color: var(--neon-blue);
+        }
+
+        .calc-summary-sticky {
+            background: #111723;
+            border: 2px solid var(--neon-blue);
+            box-shadow: 0 0 20px rgba(0, 243, 255, 0.15);
+            padding: 30px;
+            border-radius: 12px;
+            position: sticky;
+            top: 100px;
+            height: fit-content;
+        }
+
+        .total-price {
+            font-size: 2.5rem;
+            color: var(--neon-green);
+            font-weight: 800;
+            margin: 15px 0;
+            text-shadow: 0 0 10px rgba(57, 255, 20, 0.3);
+        }
+
+        .breakdown-list {
+            margin-top: 20px;
+            border-top: 1px solid var(--border);
+            padding-top: 15px;
+        }
+
+        .breakdown-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            font-size: 0.95rem;
+            color: #a0aec0;
+        }
+
+        .quiz-box {
+            background: var(--card-dark);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 40px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+        }
+
+        .quiz-progress-bar {
+            width: 100%;
+            height: 6px;
+            background: #2d3748;
+            border-radius: 3px;
+            margin-bottom: 25px;
+            overflow: hidden;
+        }
+
+        .quiz-progress-fill {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, var(--neon-blue), var(--neon-green));
+            transition: width 0.4s ease;
+        }
+
+        .quiz-meta {
+            display: flex;
+            justify-content: space-between;
+            color: #a0aec0;
+            font-size: 0.95rem;
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+
+        #question-text {
+            font-size: 1.35rem;
+            line-height: 1.5;
+            color: #fff;
+            margin-bottom: 25px;
+            border-left: 4px solid var(--aws-orange);
+            padding-left: 15px;
+        }
+
+        .quiz-option {
+            background: #1e2638;
+            border: 1px solid var(--border);
+            padding: 16px 20px;
+            border-radius: 8px;
+            margin-bottom: 12px;
+            cursor: pointer;
+            text-align: left;
+            font-size: 1.05rem;
+            transition: all 0.25s ease;
+            color: var(--text-light);
+        }
+
+        .quiz-option:hover {
+            border-color: var(--neon-blue);
+            background: #242f46;
+            transform: translateX(5px);
+            box-shadow: 0 0 15px rgba(0,243,255,0.1);
+        }
+
+        input.text-input {
+            width: 100%;
+            padding: 14px;
+            margin-bottom: 20px;
+            background: #0b0f19;
+            border: 1px solid var(--border);
+            color: white;
+            border-radius: 6px;
+            font-size: 1.05rem;
+            transition: border-color 0.3s;
+        }
+
+        input.text-input:focus {
+            outline: none;
+            border-color: var(--neon-blue);
+            box-shadow: 0 0 10px rgba(0,243,255,0.2);
+        }
+
+        button.action-btn {
+            background: var(--aws-orange);
+            color: black;
+            border: none;
+            padding: 14px 30px;
+            font-weight: bold;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 1rem;
+            margin: 10px;
+            transition: all 0.3s;
+        }
+
+        button.action-btn:hover {
+            opacity: 0.95;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255,153,0,0.3);
+        }
+
+        .review-item {
+            background: #111723;
+            border: 1px solid var(--border);
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            text-align: left;
+        }
+
+        .review-q {
+            font-size: 1.15rem;
+            font-weight: bold;
+            color: #fff;
+            margin-bottom: 12px;
+        }
+
+        .review-ans {
+            padding: 10px 15px;
+            border-radius: 5px;
+            margin-top: 8px;
+            font-size: 1rem;
+        }
+
+        .review-ans.correct-match {
+            background: rgba(56, 161, 105, 0.15);
+            border: 1px solid var(--success);
+            color: #68d391;
+        }
+
+        .review-ans.wrong-match {
+            background: rgba(229, 62, 62, 0.15);
+            border: 1px solid var(--error);
+            color: #fc8181;
+            margin-bottom: 8px;
+        }
+
+        .review-explanation {
+            background: #1a2234;
+            border-left: 4px solid var(--aws-blue);
+            padding: 12px;
+            margin-top: 10px;
+            font-size: 0.95rem;
+            color: #cbd5e0;
+        }
+
+        .edu-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 25px;
+            margin-top: 20px;
+        }
+
+        .edu-card {
+            background: var(--card-dark);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 30px;
+            line-height: 1.6;
+            transition: transform 0.4s cubic-bezier(0.165, 0.84, 0.44, 1), border-color 0.4s, box-shadow 0.4s;
+        }
+
+        .edu-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--neon-blue);
+            box-shadow: 0 0 25px rgba(0, 243, 255, 0.25), inset 0 0 10px rgba(0, 243, 255, 0.05);
+        }
+
+        .edu-card.synergy-card:hover {
+            border-color: var(--neon-green);
+            box-shadow: 0 0 25px rgba(57, 255, 20, 0.25), inset 0 0 10px rgba(57, 255, 20, 0.05);
+        }
+
+        .edu-card h2 {
+            color: var(--aws-orange);
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 10px;
+            font-size: 1.8rem;
+        }
+
+        .edu-card h3 {
+            color: var(--neon-blue);
+            margin: 20px 0 10px 0;
+            font-size: 1.3rem;
+        }
+
+        .tech-box {
+            background: #111723;
+            border-left: 4px solid var(--aws-blue);
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 0 8px 8px 0;
+        }
+
+        .tech-box h4 {
+            color: var(--neon-green);
+            margin-bottom: 8px;
+            font-size: 1.1rem;
+        }
+
+        .badge {
+            background: #2d3748;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            vertical-align: middle;
+            margin-left: 10px;
+            color: #cbd5e0;
+        }
+
+        .highlight-alert {
+            color: #f56565;
+            font-weight: bold;
+        }
+
+        ul {
+            margin-left: 20px;
+            margin-bottom: 15px;
+        }
+
+        li {
+            margin-bottom: 6px;
+        }
+
+        .tech-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+            background: #111723;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .tech-table th, .tech-table td {
+            padding: 12px 15px;
+            text-align: left;
+            border: 1px solid var(--border);
+        }
+
+        .tech-table th {
+            background: #1a2234;
+            color: var(--aws-orange);
+        }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <div class="logo">NetSim</div>
+        <div class="menu-toggle" id="menuToggle" onclick="openMenu()">
+            <span></span>
+            <span style="margin-top: 12px;"></span>
+        </div>
+    </nav>
+
+    <div class="nav-overlay" id="navOverlay">
+        <button class="close-menu-btn" onclick="closeMenu()">✕</button>
+        <a onclick="selectMenu('home')">Home</a>
+        <a onclick="selectMenu('summary')">Summary</a>
+        <a onclick="selectMenu('simulator')">Lab Simulator</a>
+        <a onclick="selectMenu('estimator')">Cost Estimator</a>
+        <a onclick="selectMenu('quiz')">Quiz</a>
+    </div>
+
+    <div id="page-home" class="page-content active">
+        <div class="hero-section">
+            <div class="hero-title-box">
+                <h1>AWS Network Architect Hub</h1>
+                <p>Platform Edukasi & Simulator Jaringan Cloud AWS Interaktif Eksklusif. Kuasai implementasi infrastruktur cloud berstandar industri global melalui visualisasi real-time.</p>
+                <button class="action-btn" onclick="scrollToContent()">Start Network Exploration</button>
+            </div>
+            <div class="scroll-indicator" onclick="scrollToContent()">
+                Scroll Down ⬇
+            </div>
+        </div>
+
+        <div class="container" id="main-home-content">
+            <div class="card-grid">
+                <div class="card-wrapper">
+                    <div class="menu-card" onclick="switchTab('summary')">
+                        <h3>📖 Summary</h3>
+                        <p>Bedah tuntas Modul AWS: Kuasai arsitektur inti isolasi regional VPC, penentuan kebijakan rute cerdas Route 53, hingga optimalisasi cache CloudFront CDN.</p>
+                    </div>
+                </div>
+                <div class="card-wrapper">
+                    <div class="menu-card" onclick="switchTab('simulator')">
+                        <h3>🎮 Lab Simulator</h3>
+                        <p>Uji skenario infrastruktur cloud. Simulasikan alur runtut paket data sekuensial dan saksikan mekanisme failover arsitektur secara nyata.</p>
+                    </div>
+                </div>
+                <div class="card-wrapper">
+                    <div class="menu-card" onclick="switchTab('estimator')">
+                        <h3>💰 Cost Estimator</h3>
+                        <p>Hitung perkiraan biaya operasional bulanan dari arsitektur jaringan cloud Anda (VPC, Route 53, CloudFront) secara transparan.</p>
+                    </div>
+                </div>
+                <div class="card-wrapper">
+                    <div class="menu-card" onclick="switchTab('quiz')">
+                        <h3>🧠 Quiz</h3>
+                        <p>Uji kompetensi pemahaman arsitektur jaringan Anda dalam mode ujian terkunci dan simpan pencapaian skor terbaik di papan peringkat.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="leaderboard-section">
+                <h2>🏆 Leaderboard</h2>
+                <table class="leaderboard-table">
+                    <thead>
+                        <tr>
+                            <th>User/Team Name</th>
+                            <th>Quiz Score</th>
+                            <th>Submitted Time</th>
+                        </tr>
+                    </thead>
+                    <tbody id="leaderboard-body">
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div id="page-summary" class="page-content">
+        <div class="inner-page-header">
+            <h1 style="color:var(--aws-blue);">📚 Master Hub: Core AWS Networking Deep Dive</h1>
+            <p>Panduan teknis mendalam dan komprehensif standardisasi arsitektur cloud AWS regional hingga global tepi.</p>
+        </div>
+
+        <div class="container" style="padding-top:0;">
+            <div class="edu-grid">
+                <div class="edu-card">
+                    <h2>☁️ 1. Amazon VPC (Virtual Private Cloud) <span class="badge">Fondasi Regional</span></h2>
+                    <p>Amazon VPC memisahkan infrastruktur Anda secara logis di dalam satu AWS Region tertentu secara terisolasi. <strong>VPC tidak bisa lintas Region!</strong></p>
+                    
+                    <h3>A. Komponen Pengalamatan & Pembagian Jaringan</h3>
+                    <div class="tech-box">
+                        <p>• <strong>VPC CIDR Block:</strong> Penentuan rentang alamat IP menggunakan notasi Classless Inter-Domain Routing. Contoh: <code style="color:var(--aws-orange)">10.0.0.0/16</code> menghasilkan total 65.536 IP privat.</p>
+                        <p style="margin-top:5px;">• <strong>Subnet:</strong> Rentang IP terisolasi yang terikat wajib pada 1 Availability Zone (AZ).</p>
+                        <p style="margin-left:15px; font-size:0.95rem;">- <span style="color:var(--neon-blue)">Public Subnet:</span> Memiliki rute langsung ke Internet Gateway. Bagus untuk Web Server / Load Balancer.</p>
+                        <p style="margin-left:15px; font-size:0.95rem;">- <span style="color:#a0aec0">Private Subnet:</span> Terisolasi dari internet luar. Tempat aman untuk Database RDS / backend sensitif.</p>
+                        <p style="margin-top:8px;" class="highlight-alert">⚠️ Aturan AWS: Di setiap subnet, AWS memesan 5 alamat IP pertama dan terakhir untuk internal routing, DNS, dan broadcast!</p>
+                    </div>
+
+                    <h3>B. Komponen Konektivitas (Gateways & Routing)</h3>
+                    <div class="tech-box">
+                        <p>• <strong>Internet Gateway (IGW):</strong> Penghubung VPC ke internet luar secara dua arah (Inbound & Outbound) bersifat highly available.</p>
+                        <p style="margin-top:5px;">• <strong>NAT Gateway:</strong> Diletakkan wajib di Public Subnet agar resource di Private Subnet bisa download patch/update ke internet, tetapi memblokir koneksi liar dari internet luar masuk ke dalam.</p>
+                        <p style="margin-top:5px;">• <strong>Route Table (Tabel Rute):</strong> Penentu arah paket data. Rute lokal bawaan (<code style="color:var(--neon-blue)">10.0.0.0/16 -> local</code>) menjamin seluruh subnet saling kenal. Rute default internet dinyatakan via <code style="color:var(--aws-orange)">0.0.0.0/0</code>.</p>
+                    </div>
+
+                    <h3>C. Lapisan Keamanan Jaringan (Firewall Berlapis)</h3>
+                    <table class="tech-table">
+                        <thead>
+                            <tr>
+                                <th>Fitur</th>
+                                <th>Security Group (SG)</th>
+                                <th>Network Access Control List (NACL)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>Tingkat Operasi</strong></td>
+                                <td>Tingkat Instance (Virtual Interface / ENI)</td>
+                                <td>Tingkat Subnet</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Sifat Status</strong></td>
+                                <td><span style="color:var(--neon-blue)">Stateful</span></td>
+                                <td><span style="color:var(--aws-orange)">Stateless</span></td>
+                            </tr>
+                            <tr>
+                                <td><strong>Jenis Aturan</strong></td>
+                                <td>Hanya mendukung aturan mengizinkan (Allow). Deny by default.</td>
+                                <td>Mendukung aturan Allow dan Deny secara eksplisit.</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Evaluasi Aturan</strong></td>
+                                <td>Seluruh aturan dicek bersamaan tanpa urutan.</td>
+                                <td>Dievaluasi berurutan berdasarkan nomor terkecil (Aturan 100 sebelum 200).</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="edu-card">
+                    <h2>🗺️ 2. AWS Route 53 (Deep Dive)</h2>
+                    <p>Amazon Route 53 memanfaatkan arsitektur Anycast global agar kueri resolusi domain dari user selalu mendarat di DNS server terdekat dengan latensi minimal.</p>
+                    
+                    <h3>A. Terminologi dan Struktur Data DNS AWS</h3>
+                    <ul>
+                        <li><strong>Hosted Zone:</strong> Wadah records DNS domain Anda. Tersedia versi <em>Public</em> untuk rute luar internet dan <em>Private</em> khusus resolusi internal VPC.</li>
+                    </ul>
+
+                    <p style="margin-top: 15px; font-weight: bold; color: var(--aws-orange);">DNS Record Types Utama:</p>
+                    <div class="tech-box">
+                        <p>• <strong>A Record:</strong> Memetakan nama domain ke alamat IPv4 fisik.</p>
+                        <p>• <strong>CNAME Record:</strong> Memetakan domain ke nama domain lain. Tidak bisa ditaruh di Zone Apex (root domain).</p>
+                        <p>• <strong>Alias Record:</strong> Fitur eksklusif AWS. Bisa dipakai di Zone Apex untuk memetakan nama root domain langsung ke AWS resources (CloudFront/Load Balancer) tanpa overhead biaya DNS.</p>
+                    </div>
+
+                    <h3>B. Bedah Mendalam 7 Kebijakan Routing</h3>
+                    <div class="tech-box">
+                        <h4>1. Simple Routing:</h4> <p>Margarahkan domain ke satu atau sekumpulan IP statis secara round-robin tanpa filter kesehatan.</p>
+                        <h4 style="margin-top:5px;">2. Weighted Routing:</h4> <p>Membagi persentase trafik berdasarkan bobot angka (cocok untuk uji coba Blue-Green Deployment).</p>
+                        <h4 style="margin-top:5px;">3. Latency-based Routing:</h4> <p>Megarahkan user otomatis ke AWS Region yang memberikan waktu tunda paling kecil.</p>
+                        <h4 style="margin-top:5px;">4. Failover Routing:</h4> <p>Mengalihkan rute 100% ke disaster recovery server (Passive) jika server utama (Active) terdeteksi down oleh Health Check.</p>
+                        <h4 style="margin-top:5px;">5. Geolocation Routing:</h4> <p>Membasi atau mengarahkan alur data berdasarkan benua/negara asal IP pengguna.</p>
+                        <h4 style="margin-top:5px;">6. Geoproximity Routing:</h4> <p>Menghitung jarak koordinat absolut dan memanipulasinya lewat nilai 'Bias'.</p>
+                        <h4 style="margin-top:5px;">7. Multi-value Answer:</h4> <p>Mengbalikkan hingga 8 record IP yang dipastikan sehat walafiat lewat integrasi kueri ter-monitoring.</p>
+                    </div>
+                </div>
+
+                <div class="edu-card">
+                    <h2>⚡ 3. Amazon CloudFront (Deep Dive)</h2>
+                    <p>Lapisan Content Delivery Network (CDN) global yang memotong jarak transmisi data statis maupun dinamis aplikasi Anda.</p>
+                    <h3>A. Komponen Edge</h3>
+                    <ul>
+                        <li><strong>Edge Locations:</strong> Titik server mini luar Region penampung cache terdekat dari end-user.</li>
+                        <li><strong>Regional Edge Caches (REC):</strong> Lapisan tengah penyarian badai kueri agar tidak menghantam langsung server origin pusat.</li>
+                    </ul>
+                    <h3>B. Aturan Enkripsi Jaringan</h3>
+                    <p>Mengamankan S3 Bucket via <strong>Origin Access Control (OAC)</strong> sehingga data di S3 tidak bisa dicuri secara bypass langsung melainkan wajib melewati filter otentikasi CloudFront.</p>
+                </div>
+
+                <div class="edu-card synergy-card" style="border-left: 5px solid var(--neon-green);">
+                    <h2>🤝 4. Sinergi Arsitektur Utuh (Full Systems Integration)</h2>
+                    <p>Kolaborasi orkestrasi global Route 53 + CloudFront di tepi perimeter digabungkan dengan ketatnya barikade Amazon VPC regional.</p>
+                    <div class="tech-box" style="border-color: var(--neon-green);">
+                        <h4>Alur Sekuensial Paket Data:</h4>
+                        <p>1. User melempar domain $\rightarrow$ **Route 53** menyuplai IP Edge **CloudFront** terdekat via Alias Record.</p>
+                        <p>2. CloudFront memproses jika terjadi *Cache Hit* langsung dipulangkan ke user. Jika *Cache Miss*, dilempar ke internal **VPC**.</p>
+                        <p>3. Application Load Balancer di Public Subnet menerima data, memverifikasi token security group lalu memproses ke EC2 di Private Subnet dengan super aman.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="page-simulator" class="page-content">
+        <div class="inner-page-header">
+            <h1 style="color:var(--aws-blue);">🎮 Simulator Lab Condition</h1>
+            <p>Pilih jenis skenario gangguan pada infrastruktur cloud di panel kiri, kemudian jalankan simulasi transfer paket data.</p>
+        </div>
+        
+        <div class="container" style="padding-top:0;">
+            <div class="simulator-layout">
+                <div style="background: var(--card-dark); padding: 15px; border-radius: 8px; border: 1px solid var(--border); height: fit-content;">
+                    <h3>Skenario Jaringan</h3>
+                    <button id="cond-normal" class="condition-btn active" onclick="setScenario('normal')">✅ Kondisi Normal</button>
+                    <button id="cond-cdn-fail" class="condition-btn" onclick="setScenario('cdn-fail')">⚠️ CloudFront Cache Miss</button>
+                    <button id="cond-vpc-down" class="condition-btn" onclick="setScenario('vpc-down')">🚨 Jalur VPN / VPC Down</button>
+                    <hr style="border-color: var(--border); margin: 15px 0;">
+                    <button class="action-btn" style="width: 100%; margin: 0;" onclick="runSimulation()">Kirim Request Paket Data</button>
+                </div>
+
+                <div style="background: #0f172a; padding: 20px; border-radius: 8px; border: 1px solid var(--border);">
+                    <div id="node-user" class="sim-node"><h4>💻 Client Browser (Internet)</h4></div>
+                    <div style="text-align: center; color: var(--text-muted);">↓</div>
+                    <div id="node-r53" class="sim-node"><h4>🗺️ Amazon Route 53 (DNS)</h4></div>
+                    <div style="text-align: center; color: var(--text-muted);">↓</div>
+                    <div id="node-cf" class="sim-node"><h4>⚡ Amazon CloudFront (CDN)</h4></div>
+                    <div style="text-align: center; color: var(--text-muted);">↓</div>
+                    <div id="node-vpc" class="sim-node"><h4>🛡️ Amazon VPC Secure Server</h4></div>
+                    
+                    <div id="sim-log" style="margin-top: 20px; background: black; padding: 10px; font-family: monospace; color: #38a169; border-radius: 4px; min-height: 50px; line-height: 1.6;">
+                        [System] Pilih Skenario dan Klik Jalankan Paket Data untuk memulai...
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="page-estimator" class="page-content">
+        <div class="inner-page-header">
+            <h1 style="color:var(--aws-blue);">💰 AWS Architecture Cost Estimator</h1>
+            <p>Kalkulator Interaktif Real-Time untuk memproyeksikan pengeluaran bulanan arsitektur topologi jaringan AWS Anda.</p>
+        </div>
+
+        <div class="container" style="padding-top:0;">
+            <div class="estimator-layout">
+                <div>
+                    <div class="estimator-card">
+                        <h3>☁️ Amazon VPC Component Cost</h3>
+                        <div class="form-group">
+                            <label>Jumlah NAT Gateway (Aktif 24/7 sebulan):</label>
+                            <input type="number" id="cost-nat-qty" value="1" min="0" oninput="calculateCloudCosts()">
+                            <small style="color:#a0aec0; font-size:0.8rem;">Tarif Standard Regional: ~$0.045 per jam (~$32.40/bulan per unit)</small>
+                        </div>
+                        <div class="form-group">
+                            <label>Volume Data yang diproses NAT Gateway (GB / Bulan):</label>
+                            <input type="number" id="cost-nat-data" value="100" min="0" oninput="calculateCloudCosts()">
+                            <small style="color:#a0aec0; font-size:0.8rem;">Tarif Pemrosesan Data: $0.045 per GB</small>
+                        </div>
+                    </div>
+
+                    <div class="estimator-card">
+                        <h3>🗺️ AWS Route 53 DNS Cost</h3>
+                        <div class="form-group">
+                            <label>Jumlah Hosted Zone (Domain):</label>
+                            <input type="number" id="cost-r53-zones" value="1" min="0" oninput="calculateCloudCosts()">
+                            <small style="color:#a0aec0; font-size:0.8rem;">Tarif Base: $0.50 per hosted zone / bulan</small>
+                        </div>
+                        <div class="form-group">
+                            <label>Estimasi Kueri DNS Masuk (Per Juta Kueri / Bulan):</label>
+                            <input type="number" id="cost-r53-queries" value="10" min="0" oninput="calculateCloudCosts()">
+                            <small style="color:#a0aec0; font-size:0.8rem;">Tarif Standard: $0.40 per 1 juta kueri</small>
+                        </div>
+                    </div>
+
+                    <div class="estimator-card">
+                        <h3>⚡ Amazon CloudFront CDN Cost</h3>
+                        <div class="form-group">
+                            <label>Volume Data Out ke Internet Publik (GB / Bulan):</label>
+                            <input type="number" id="cost-cf-dataout" value="500" min="0" oninput="calculateCloudCosts()">
+                            <small style="color:#a0aec0; font-size:0.8rem;">Estimasi regional (Asia Pasifik): ~$0.114 per GB</small>
+                        </div>
+                    </div>
+                </div>
+
+                <div>
+                    <div class="calc-summary-sticky">
+                        <h3>Total Estimasi Bulanan</h3>
+                        <div class="total-price" id="grand-total-price">$0.00</div>
+                        <p style="font-size:0.9rem; color:#cbd5e0;">*Perhitungan didasarkan pada acuan harga AWS Region Asia Pasifik (Singapura/Jakarta).</p>
+                        
+                        <div class="breakdown-list">
+                            <div class="breakdown-item">
+                                <span>Amazon VPC Total:</span>
+                                <span id="breakdown-vpc" style="color:var(--neon-blue); font-weight:bold;">$0.00</span>
+                            </div>
+                            <div class="breakdown-item">
+                                <span>Route 53 Total:</span>
+                                <span id="breakdown-r53" style="color:var(--neon-blue); font-weight:bold;">$0.00</span>
+                            </div>
+                            <div class="breakdown-item">
+                                <span>CloudFront Total:</span>
+                                <span id="breakdown-cf" style="color:var(--neon-blue); font-weight:bold;">$0.00</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="page-quiz" class="page-content">
+        <div class="inner-page-header">
+            <h1 style="color:var(--aws-blue);">🧠 AWS Network Assessment Quiz</h1>
+            <p>Sistem Mode Ujian Terkunci: Evaluasi Standar AWS Academy Knowledge Check Modul 5.</p>
+        </div>
+
+        <div class="container" style="padding-top:0;">
+            <div class="quiz-box">
+                <div class="quiz-meta" id="quiz-meta-panel" style="display: none;">
+                    <span id="quiz-progress-text">Soal 1 dari 10</span>
+                    <span id="quiz-score-running" style="color: var(--neon-blue);">Poin Benar: 0</span>
+                </div>
+                <div class="quiz-progress-bar" id="quiz-progress-bar-container" style="display: none;">
+                    <div class="quiz-progress-fill" id="quiz-progress-fill"></div>
+                </div>
+
+                <div id="quiz-intro-screen" style="max-width: 500px; margin: 0 auto; text-align: center;">
+                    <p style="color: #cbd5e0; margin-bottom: 20px; font-size: 1.05rem; line-height: 1.6;">
+                        Anda akan memulai quiz yang berisi 10 soal komprehensif mengenai Amazon VPC, Route 53, dan CloudFront. Menu navigasi akan dikunci otomatis sampai Anda menekan tombol quiz selesai.
+                    </p>
+                    <input type="text" id="user-name" class="text-input" placeholder="Masukkan Nama Kamu / Nama Tim">
+                    <div style="margin-top: 10px;">
+                        <button class="action-btn" style="background:#4a5568; color: white;" onclick="switchTab('home')">⬅️ Kembali</button>
+                        <button class="action-btn" onclick="startLockedQuiz()">🚀 Mulai Ujian</button>
+                    </div>
+                </div>
+
+                <div id="quiz-play-screen" style="display: none; text-align: left; max-width: 800px; margin: 0 auto;">
+                    <h3 id="question-text">Memuat pertanyaan...</h3>
+                    <div id="quiz-options-container">
+                    </div>
+                </div>
+
+                <div id="quiz-result-screen" style="display: none; text-align: center;">
+                    <h3 style="color: var(--neon-green); font-size: 2rem; margin-bottom: 15px;" id="result-status-title">Quiz Selesai!</h3>
+                    <h2 style="font-size: 3rem; margin-bottom: 20px; color: #fff;" id="result-score-text">Skor: 0 / 100</h2>
+                    <p style="margin: 15px 0; color: #a0aec0; font-size: 1.05rem;" id="result-summary-text">Kerja bagus!</p>
+                    <div style="margin-top: 25px;">
+                        <button class="action-btn" style="background: var(--aws-blue); color: white;" onclick="showReviewScreen()">🔍 Lihat Kunci Jawaban</button>
+                        <button class="action-btn" onclick="resetQuizState()">Selesai & Buka Kunci Menu</button>
+                    </div>
+                </div>
+
+                <div id="quiz-review-screen" style="display: none; max-width: 850px; margin: 0 auto;">
+                    <h3 style="color: var(--aws-orange); font-size: 1.8rem; margin-bottom: 20px; text-align: center; border-bottom: 2px solid var(--border); padding-bottom: 15px;">
+                        🔑 Pembahasan & Kunci Jawaban Quiz
+                    </h3>
+                    <div id="review-list-container">
+                    </div>
+                    <div style="text-align: center; margin-top: 30px;">
+                        <button class="action-btn" style="background: var(--success); color: white; padding: 15px 40px;" onclick="resetQuizState()">🏠 Kembali Ke Home</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const quizBank = [
+            {
+                q: "Perusahaan Anda memiliki arsitektur web tiga lapis (three-tier architecture) di AWS. Di bagian manakah Amazon RDS (Database) dan EC2 Instances untuk backend aplikasi sebaiknya diletakkan demi alasan keamanan optimal?",
+                exp: "Komponen backend dan database sensitif wajib diletakkan di private subnet agar terisolasi sepenuhnya dari akses luar internet langsung.",
+                options: [
+                    { t: "A. Public Subnet, karena database harus bisa menerima pembaruan (patching) langsung dari internet.", c: false },
+                    { t: "B. Private Subnet, agar terisolasi dari akses internet langsung and hanya bisa dihubungi oleh lapisan di atasnya.", c: true },
+                    { t: "C. Internet Gateway, karena komponen ini bertindak as jembatan enkripsi database.", c: false },
+                    { t: "D. Edge Location, agar data hasil kueri database dapat di-cache dekat dengan pengguna global.", c: false }
+                ]
+            },
+            {
+                q: "Saat mengonfigurasi tabel rute (Route Table) untuk sebuah Public Subnet di dalam Amazon VPC, baris entri aturan manakah yang wajib ada agar subnet tersebut dapat berkomunikasi dua arah dengan internet publik?",
+                exp: "Public subnet didefinisikan secara mutlak oleh adanya rute tujuan luar internet (0.0.0.0/0) yang diarahkan menuju Internet Gateway (IGW).",
+                options: [
+                    { t: "A. 10.0.0.0/16 mengarah ke local", c: false },
+                    { t: "B. 0.0.0.0/0 mengarah ke NAT Gateway", c: false },
+                    { t: "C. 0.0.0.0/0 mengarah ke Internet Gateway", c: true },
+                    { t: "D. 127.0.0.1/32 mengarah ke Virtual Private Gateway", c: false }
+                ]
+            },
+            {
+                q: "Sebuah startup ingin memastikan bahwa server backend mereka di Private Subnet tetap bisa mengunduh library kode dan pembaruan perangkat lunak dari internet, tetapi dilarang keras menerima koneksi masuk (inbound) dari pihak luar di internet. Komponen VPC apa yang harus dipasang di Public Subnet untuk memfacilitasi kebutuhan ini?",
+                exp: "NAT Gateway memberikan akses keluar (outbound-only) bagi private subnet untuk patching dan mengunduh library, seraya memblokir koneksi inbound liar.",
+                options: [
+                    { t: "A. Internet Gateway", c: false },
+                    { t: "B. NAT Gateway", c: true },
+                    { t: "C. Security Group dengan aturan Stateless", c: false },
+                    { t: "D. AWS Route 53 Geolocation", c: false }
+                ]
+            },
+            {
+                q: "Manakah pernyataan berikut yang mendefinisikan dengan tepat perbedaan mendasar antara sifat Stateful pada Security Group dan Stateless pada Network Access Control List (NACL)?",
+                exp: "Security Group bersifat Stateful (otomatis meloloskan trafik balik), sedangkan NACL bersifat Stateless sehingga aturan inbound dan outbound wajib ditulis eksplisit satu per satu.",
+                options: [
+                    { t: "A. Security Group otomatis mengizinkan trafik keluar balasan jika trafik masuknya diizinkan, sedangkan NACL memerlukan aturan keluar (outbound) yang ditulis secara eksplisit.", c: true },
+                    { t: "B. Security Group memeriksa paket data di tingkat subnet, sedangkan NACL memeriksa paket data langsung di dalam sistem operasi EC2.", c: false },
+                    { t: "C. Security Group mendukung aturan Allow dan Deny, sedangkan NACL hanya mendukung aturan Allow.", c: false },
+                    { t: "D. Jika suatu trafik diblokir oleh Security Group, NACL otomatis akan ikut membuka blokir tersebut demi ketersediaan jaringan.", c: false }
+                ]
+            },
+            {
+                q: "Anda ingin mendaftarkan nama domain baru tokoku-online.com dan mengarahkan trafik pengguna ke infrastruktur AWS yang Anda miliki. Layanan AWS manakah yang menyediakan fitur registrasi domain sekaligus manajemen resolusi DNS tersebut?",
+                exp: "Amazon Route 53 adalah layanan DNS terkelola yang menangani fungsi komprehensif mulai dari registrasi nama domain baru hingga manajemen kueri records.",
+                options: [
+                    { t: "A. Amazon CloudFront", c: false },
+                    { t: "B. AWS Direct Connect", c: false },
+                    { t: "C. Amazon VPC Wizard", c: false },
+                    { t: "D. AWS Route 53", c: true }
+                ]
+            },
+            {
+                q: "Perusahaan game online meluncurkan server baru di dua Region AWS: Singapura dan Virginia. Mereka ingin memastikan pemain asal Indonesia otomatis diarahkan ke server Singapura, sedangkan pemain asal Amerika diarahkan ke Virginia untuk meminimalkan waktu tunggu jaringan (round-trip time). Kebijakan routing Route 53 mana yang paling tepat?",
+                exp: "Margarahkan trafik untuk meminimalkan latensi atau waktu tunggu jaringan (round-trip time) merupakan fungsi utama dari Latency-based Routing Policy.",
+                options: [
+                    { t: "A. Simple Routing Policy", c: false },
+                    { t: "B. Latency-based Routing Policy", c: true },
+                    { t: "D. Weighted Routing Policy", c: false }
+                ]
+            },
+            {
+                q: "Anda ingin mengonfigurasi strategi Disaster Recovery (pemulihan bencana) Active-Passive. Jika aplikasi web utama Anda di Region Jakarta mengalami kegagalan, Route 53 harus otomatis mengalihkan pengguna ke situs cadangan statis di Amazon S3 Region Tokyo. Kebijakan routing apa yang mendukung skenario ini?",
+                exp: "Failover Routing Policy digunakan khusus dalam skenario pemulihan Active-Passive yang dipadukan secara otomatis dengan Route 53 Health Checks.",
+                options: [
+                    { t: "A. Geoproximity Routing Policy", c: false },
+                    { t: "B. Failover Routing Policy", c: true },
+                    { t: "C. Multi-value Answer Routing Policy", c: false },
+                    { t: "D. Weighted Routing Policy dengan bobot 50:50", c: false }
+                ]
+            },
+            {
+                q: "Di manakah Amazon CloudFront menyimpan salinan sementara (cache) dari aset website seperti file gambar, video, dan dokumen HTML agar dapat diakses dengan latensi sangat rendah oleh pengguna di seluruh dunia?",
+                exp: "Tempat penampungan sementara (cache data) global CDN Amazon CloudFront dinamakan Edge Location.",
+                options: [
+                    { t: "A. Availability Zones", c: false },
+                    { t: "B. Edge Locations", c: true },
+                    { t: "C. Private Subnets", c: false },
+                    { t: "D. Origin Servers", c: false }
+                ]
+            },
+            {
+                q: "Anda baru saja memperbarui file logo perusahaan logo.png di Amazon S3 bucket yang bertindak sebagai Origin untuk Amazon CloudFront. Namun, pelanggan melaporkan bahwa mereka masih melihat logo lama saat mengakses website. Langkah apa yang harus Anda lakukan untuk memaksa CloudFront memperbarui file tersebut di seluruh dunia secara instan?",
+                exp: "Cache Invalidation digunakan untuk menghapus paksa salinan data lama di seluruh Edge Location sebelum batas waktu TTL asli habis.",
+                options: [
+                    { t: "A. Menghapus Internet Gateway dan membuat yang baru.", c: false },
+                    { t: "B. Melakukan proses Cache Invalidation untuk path file tersebut di CloudFront Distribution.", c: true },
+                    { t: "C. Mengubah kebijakan routing Route 53 dari Simple ke Latency-based.", c: false },
+                    { t: "D. Menurutkan batas kapasitas alokasi IP di CIDR block VPC.", c: false }
+                ]
+            },
+            {
+                q: "Mengapa mengintegrasikan Amazon CloudFront di garda terdepan Amazon VPC dianggap sebagai praktik arsitektur terbaik (best practice) dari sisi keamanan dan efisiensi?",
+                exp: "Sinergi CloudFront di depan VPC bertindak sebagai perisai perimeter luar (DDoS protection via AWS Shield) sehingga serangan diredam di Edge Location sebelum sempat membebani bandwidth server origin dalam VPC.",
+                options: [
+                    { t: "A. Karena CloudFront otomatis memindahkan database dari private subnet ke edge location.", c: false },
+                    { t: "B. Karena CloudFront menghapus kebutuhan akan Security Group dan NACL di tingkat VPC.", c: false },
+                    { t: "C. Karena serangan DDoS dapat diredam di perimeter luar (Edge Locations) melalui AWS Shield sebelum sempat masuk membebani bandwidth dan server di dalam VPC.", c: true },
+                    { t: "D. Karena CloudFront memaksa semua server backend di dalam VPC menggunakan alamat IP publik.", c: false }
+                ]
+            }
+        ];
+
+        let isQuizLocked = false;
+        let currentScenario = 'normal';
+        let currentQuestionIndex = 0;
+        let correctAnswersCount = 0;
+        let userSelectedAnswers = []; 
+
+        function scrollToContent() {
+            const targetElement = document.getElementById('main-home-content');
+            if (targetElement) {
+                const targetPosition = targetElement.getBoundingClientRect().top + window.pageYOffset;
+                const startPosition = window.pageYOffset;
+                const distance = targetPosition - startPosition;
+                const duration = 800;
+                let start = null;
+
+                function step(timestamp) {
+                    if (!start) start = timestamp;
+                    const progress = timestamp - start;
+                    const progressPercentage = Math.min(progress / duration, 1);
+                    
+                    const easeInOutCubic = progressPercentage < 0.5 
+                        ? 4 * progressPercentage * progressPercentage * progressPercentage 
+                        : 1 - Math.pow(-2 * progressPercentage + 2, 3) / 2;
+
+                    window.scrollTo(0, startPosition + distance * easeInOutCubic);
+
+                    if (progress < duration) {
+                        window.requestAnimationFrame(step);
+                    }
+                }
+                
+                window.requestAnimationFrame(step);
+            }
+        }
+
+        function openMenu() {
+            document.getElementById('navOverlay').classList.add('open');
+        }
+
+        function closeMenu() {
+            document.getElementById('navOverlay').classList.remove('open');
+        }
+
+        function selectMenu(tabId) {
+            if (isQuizLocked) {
+                alert("❌ Navigasi Terkunci! Selesaikan quiz Anda terlebih dahulu untuk membuka akses halaman kembali.");
+                return;
+            }
+            closeMenu();
+            switchTab(tabId);
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function switchTab(tabId) {
+            document.querySelectorAll('.page-content').forEach(page => page.classList.remove('active'));
+            document.getElementById(`page-${tabId}`).classList.add('active');
+            window.scrollTo({ top: 0, behavior: 'instant' }); 
+
+            if(tabId === 'home') renderLeaderboard();
+            if(tabId === 'estimator') calculateCloudCosts();
+        }
+
+        function setScenario(scen) {
+            currentScenario = scen;
+            document.querySelectorAll('.condition-btn').forEach(btn => btn.classList.remove('active'));
+            document.getElementById(`cond-${scen}`).classList.add('active');
+        }
+
+        function runSimulation() {
+            const log = document.getElementById('sim-log');
+            document.querySelectorAll('.sim-node').forEach(n => n.className = 'sim-node');
+            log.innerHTML = "[Proses] Menginisiasi transmisi paket data...<br>";
+
+            setTimeout(() => {
+                document.getElementById('node-user').classList.add('active-ok');
+                log.innerHTML += "[Tahap 1] Client Browser mengirimkan request HTTPS outbound...<br>";
+            }, 400);
+
+            setTimeout(() => {
+                document.getElementById('node-r53').classList.add('active-ok');
+                log.innerHTML += "[Tahap 2] Amazon Route 53 mengurai DNS query ke alamat IP global terdestinasi.<br>";
+            }, 1200);
+
+            setTimeout(() => {
+                const cfNode = document.getElementById('node-cf');
+                if (currentScenario === 'cdn-fail') {
+                    cfNode.classList.add('active-warn'); 
+                    log.innerHTML += "[Tahap 3] <span style='color:var(--warning)'>[Cache Miss] CloudFront CDN gagal menemukan data di Edge Cache local. Request diteruskan paksa ke server origin pusat...</span><br>";
+                } else {
+                    cfNode.classList.add('active-ok');
+                    log.innerHTML += "[Tahap 3] [Cache Hit] CloudFront Edge Location menyuplai data instan dari memori cache lokal.<br>";
+                }
+            }, 2000);
+
+            setTimeout(() => {
+                const vpcNode = document.getElementById('node-vpc');
+                if (currentScenario === 'vpc-down') {
+                    vpcNode.classList.add('active-fail');
+                    log.innerHTML += "<span style='color:var(--error);'>[Tahap 4] [ERROR 502] Server Origin di dalam Amazon VPC Mati total/Down! Transmisi paket data gagal total.</span>";
+                } else if (currentScenario === 'cdn-fail') {
+                    vpcNode.classList.add('active-ok');
+                    log.innerHTML += "<span style='color:var(--success);'>[Tahap 4] [BERHASIL (Failover)] Server VPC berhasil menerima request limpahan dari CloudFront dan memproses data dengan aman melewati Security Group!</span>";
+                } else {
+                    vpcNode.classList.add('active-ok');
+                    log.innerHTML += "<span style='color:var(--success);'>[Tahap 4] [BERHASIL] Paket data mendarat mulus melewati perimeter keamanan subnet menuju server VPC! Jaringan beroperasi optimal.</span>";
+                }
+            }, 2800);
+        }
+
+        function calculateCloudCosts() {
+            const natQty = parseFloat(document.getElementById('cost-nat-qty').value) || 0;
+            const natData = parseFloat(document.getElementById('cost-nat-data').value) || 0;
+            const r53Zones = parseFloat(document.getElementById('cost-r53-zones').value) || 0;
+            const r53Queries = parseFloat(document.getElementById('cost-r53-queries').value) || 0;
+            const cfDataOut = parseFloat(document.getElementById('cost-cf-dataout').value) || 0;
+
+            const vpcCost = (natQty * 32.40) + (natData * 0.045);
+            const r53Cost = (r53Zones * 0.50) + (r53Queries * 0.40);
+            const cfCost = cfDataOut * 0.114;
+
+            const totalCost = vpcCost + r53Cost + cfCost;
+
+            document.getElementById('breakdown-vpc').innerText = `$${vpcCost.toFixed(2)}`;
+            document.getElementById('breakdown-r53').innerText = `$${r53Cost.toFixed(2)}`;
+            document.getElementById('breakdown-cf').innerText = `$${cfCost.toFixed(2)}`;
+            document.getElementById('grand-total-price').innerText = `$${totalCost.toFixed(2)}`;
+        }
+
+        function startLockedQuiz() {
+            const nameInput = document.getElementById('user-name').value.trim();
+            if(!nameInput) {
+                alert("Silakan masukkan nama pengguna atau tim Anda terlebih dahulu!");
+                return;
+            }
+            
+            isQuizLocked = true;
+            currentQuestionIndex = 0;
+            correctAnswersCount = 0;
+            userSelectedAnswers = [];
+            
+            document.getElementById('quiz-intro-screen').style.display = 'none';
+            document.getElementById('quiz-play-screen').style.display = 'block';
+            document.getElementById('quiz-meta-panel').style.display = 'flex';
+            document.getElementById('quiz-progress-bar-container').style.display = 'block';
+            document.getElementById('quiz-result-screen').style.display = 'none';
+            document.getElementById('quiz-review-screen').style.display = 'none';
+            
+            showQuestion();
+        }
+
+        function showQuestion() {
+            const currentQuestion = quizBank[currentQuestionIndex];
+            
+            document.getElementById('quiz-progress-text').innerText = `Soal ${currentQuestionIndex + 1} dari 10`;
+            document.getElementById('quiz-score-running').innerText = `Jawaban Benar: ${correctAnswersCount}`;
+            
+            const progressPercent = ((currentQuestionIndex) / quizBank.length) * 100;
+            document.getElementById('quiz-progress-fill').style.width = `${progressPercent}%`;
+
+            document.getElementById('question-text').innerText = currentQuestion.q;
+            
+            const optionsContainer = document.getElementById('quiz-options-container');
+            optionsContainer.innerHTML = '';
+            
+            currentQuestion.options.forEach(opt => {
+                const optDiv = document.createElement('div');
+                optDiv.className = 'quiz-option';
+                optDiv.innerText = opt.t;
+                optDiv.onclick = () => handleAnswerSubmission(opt);
+                optionsContainer.appendChild(optDiv);
+            });
+        }
+
+        function handleAnswerSubmission(selectedOption) {
+            userSelectedAnswers.push(selectedOption);
+
+            if(selectedOption.c) {
+                correctAnswersCount++;
+            }
+            
+            currentQuestionIndex++;
+            
+            if(currentQuestionIndex < quizBank.length) {
+                showQuestion();
+            } else {
+                finishQuizProcedure();
+            }
+        }
+
+        function finishQuizProcedure() {
+            const nameInput = document.getElementById('user-name').value.trim();
+            const finalScore = correctAnswersCount * 10;
+            
+            document.getElementById('quiz-play-screen').style.display = 'none';
+            document.getElementById('quiz-meta-panel').style.display = 'none';
+            document.getElementById('quiz-progress-bar-container').style.display = 'none';
+            
+            document.getElementById('quiz-result-screen').style.display = 'block';
+            document.getElementById('result-score-text').innerText = `Skor Akhir: ${finalScore} / 100`;
+            document.getElementById('result-status-title').innerText = finalScore >= 70 ? "🎉 Selamat, Anda Lulus!" : "📚 Tetap Semangat, Evaluasi Lagi!";
+            document.getElementById('result-summary-text').innerText = `Detail Jawaban: ${correctAnswersCount} Benar dari 10 Soal Assessment.`;
+            
+            const timestamp = new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+            let leaderboardData = JSON.parse(localStorage.getItem('netsim_scores')) || [];
+            leaderboardData.push({ name: nameInput, userScore: finalScore, time: timestamp });
+            localStorage.setItem('netsim_scores', JSON.stringify(leaderboardData));
+        }
+
+        function showReviewScreen() {
+            document.getElementById('quiz-result-screen').style.display = 'none';
+            const reviewContainer = document.getElementById('review-list-container');
+            reviewContainer.innerHTML = '';
+
+            quizBank.forEach((item, index) => {
+                const userAns = userSelectedAnswers[index];
+                const rightAns = item.options.find(o => o.c);
+
+                const itemDiv = document.createElement('div');
+                itemDiv.className = 'review-item';
+
+                let answerStatusHTML = '';
+                if (userAns.c) {
+                    answerStatusHTML = `<div class="review-ans correct-match">🟢 <b>Jawaban Anda Benar:</b> ${userAns.t}</div>`;
+                } else {
+                    answerStatusHTML = `
+                        <div class="review-ans wrong-match">🔴 <b>Jawaban Anda:</b> ${userAns.t}</div>
+                        <div class="review-ans correct-match">🟢 <b>Kunci Jawaban Tepat:</b> ${rightAns.t}</div>
+                    `;
+                }
+
+                itemDiv.innerHTML = `
+                    <div class="review-q">Soal ${index + 1}. ${item.q}</div>
+                    ${answerStatusHTML}
+                    <div class="review-explanation"><b>💡 Penjelasan Arsitektur:</b> ${item.exp}</div>
+                `;
+                reviewContainer.appendChild(itemDiv);
+            });
+
+            document.getElementById('quiz-review-screen').style.display = 'block';
+            window.scrollTo({ top: document.getElementById('page-quiz').offsetTop - 30, behavior: 'smooth' });
+        }
+
+        function resetQuizState() {
+            isQuizLocked = false;
+            document.getElementById('user-name').value = '';
+            document.getElementById('quiz-result-screen').style.display = 'none';
+            document.getElementById('quiz-review-screen').style.display = 'none';
+            document.getElementById('quiz-intro-screen').style.display = 'block';
+            switchTab('home');
+            window.scrollTo({ top: 0 }); 
+        }
+
+        function renderLeaderboard() {
+            const tbody = document.getElementById('leaderboard-body');
+            tbody.innerHTML = '';
+            let leaderboardData = JSON.parse(localStorage.getItem('netsim_scores')) || [];
+            
+            if(leaderboardData.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="3" style="text-align:center; color:var(--text-muted); padding: 20px;">Belum ada rekam nilai kuis saat ini.</td></tr>`;
+                return;
+            }
+
+            leaderboardData.sort((a, b) => b.userScore - a.userScore);
+
+            leaderboardData.forEach(data => {
+                tbody.innerHTML += `
+                    <tr>
+                        <td><strong>${data.name}</strong></td>
+                        <td style="color:var(--aws-orange); font-weight:bold;">${data.userScore} Poin</td>
+                        <td style="color:var(--text-muted); font-size:0.9rem;">${data.time}</td>
+                    </tr>
+                `;
+            });
+        }
+
+        window.onbeforeunload = function () {
+            window.scrollTo({ top: 0 });
+        };
+
+        window.onload = function() {
+            if ('scrollRestoration' in history) {
+                history.scrollRestoration = 'manual';
+            }
+            window.scrollTo({ top: 0 });
+            switchTab('home'); 
+            renderLeaderboard();
+        };
+    </script>
+</body>
+</html>
