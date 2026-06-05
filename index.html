@@ -199,7 +199,7 @@
                     <p>Kolaborasi orkestrasi global Route 53 + CloudFront di tepi perimeter digabungkan dengan ketatnya barikade Amazon VPC regional.</p>
                     <div class="tech-box" style="border-color: var(--neon-green);">
                         <h4>Alur Sekuensial Paket Data:</h4>
-                        <p>1. User melempar domain $\rightarrow$ **Route 53** menyuplai IP Edge **CloudFront** terdekat via Alias Record.</p>
+                        <p>1. User melempar domain Route 53 menyuplai IP Edge **CloudFront** terdekat via Alias Record.</p>
                         <p>2. CloudFront meproses jika terjadi *Cache Hit* langsung dipulangkan ke user. Jika *Cache Miss*, dilempar ke internal **VPC**.</p>
                         <p>3. Application Load Balancer di Public Subnet menerima data, memverifikasi token security group lalu memproses ke EC2 di Private Subnet dengan super aman.</p>
                     </div>
